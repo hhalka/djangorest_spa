@@ -1,2 +1,2 @@
 # djangorest_spa
-Django REST framework with Angular 6 SPA
+Django REST framework with Angular 7 SPA
