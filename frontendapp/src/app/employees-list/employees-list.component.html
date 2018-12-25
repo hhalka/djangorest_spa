@@ -1,0 +1,81 @@
+<div style="width:80%; margin: auto">
+  <h1>
+    current employees list
+  </h1>
+  <div class="row">
+    <div style="width:40%">
+      <input type="text" class="form-control" id="userSearch" (keyup)="filterUsers($event)" placeholder="Search..." />
+    </div>
+  </div>
+  <div>
+    <table style="width:100%">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Department</th>
+        <th>Active</th>
+        <th>Actions</th>
+      </tr>
+      <tr *ngFor="let employee of employees | paginate: { itemsPerPage: itemsPerPage,
+                                                          currentPage: currentPage,
+                                                          totalItems: totalItems }">
+        <td>{{ employee.id }}</td>
+        <td>{{ employee.empName }}</td>
+        <td>{{ employee.depName }}</td>
+        <td>{{ employee.empActive }}</td>
+        <td>
+          <a href="#" (click)="enableEditEmployee($event, employee)">Edit</a>
+          &nbsp;
+          <a href="#" (click)="confirmDeleteEmployee($event, employee)">Delete</a>
+        </td>
+      </tr>
+    </table>
+    <div>
+      <pagination-controls (pageChange)="getEmployees($event, undefined)"
+                           maxSize="10"
+                           directionLinks="true"
+                           autoHide="true"
+                           responsive="true"
+                           previousLabel="Previous"
+                           nextLabel="Next"
+                           screenReaderPaginationLabel="Pagination"
+                           screenReaderPageLabel="page"
+                           screenReaderCurrentLabel="You're on page">
+      </pagination-controls>
+    </div>
+  </div>
+
+  <ngx-smart-modal #editEmpModal identifier="editEmpModal">
+    <div *ngIf="editEmpModal.hasData()">
+      <h1>Change employee data</h1>
+      <p>Employee name: </p>
+      <form action="">
+        <div class="form-group">
+          <label for="empName">Name</label>
+          <input class="form-control" type="text" id="empName" name="empName" [(ngModel)]="editEmpModal.getData().employee.empName" required>
+        </div>
+        <div class="form-group">
+          <label for="empActive">Active</label>
+          <input type="checkbox" id="empActive" name="empActive" [(ngModel)]="editEmpModal.getData().employee.empActive" required>
+        </div>
+        <div class="form-group">
+          <label for="empDept">Department</label>
+          <select class="form-control" id="empDept" name="empDept" [(ngModel)]="editEmpModal.getData().employee.empDepId" required>
+            <option *ngFor="let dep of departments" [value]="dep.id">{{dep.depName}}</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <button (click)="editEmployee(editEmpModal.getData().employee)">Save</button>
+    <button (click)="editEmpModal.close()">Cancel</button>
+  </ngx-smart-modal>
+
+  <ngx-smart-modal #deleteEmpModal identifier="deleteEmpModal">
+    <div *ngIf="deleteEmpModal.hasData()">
+      <h1>Delete employee data</h1>
+      <p>Are you sure you want to delete employee {{ deleteEmpModal.getData().empName }} {{ deleteEmpModal.getData().empDepId}}?</p>
+    </div>
+    <button (click)="deleteEmployee(deleteEmpModal.getData().id)">Yes</button>
+    <button (click)="deleteEmpModal.close()">No</button>
+  </ngx-smart-modal>
+</div>
